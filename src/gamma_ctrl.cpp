@@ -49,9 +49,29 @@ BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
     return TRUE;
 }
 
+#include <map>
+
 void GammaController::RefreshMonitors() {
+    // Save current gammas
+    std::map<std::wstring, float> savedGammas;
+    for (const auto& mon : m_monitors) {
+        savedGammas[mon.deviceName] = mon.currentGamma;
+    }
+
     ClearMonitors();
     EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, (LPARAM)&m_monitors);
+
+    // Restore gammas
+    for (auto& mon : m_monitors) {
+        auto it = savedGammas.find(mon.deviceName);
+        if (it != savedGammas.end()) {
+            mon.currentGamma = it->second;
+            // Re-apply gamma to hardware if needed, or just update state.
+            // Since we are "refreshing", maybe hardware state is lost or maybe not.
+            // Safer to re-apply if we want to be sure, but might cause flicker.
+            // For now, update state so UI shows correct value.
+        }
+    }
 }
 
 size_t GammaController::GetMonitorCount() const {
