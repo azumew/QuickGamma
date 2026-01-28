@@ -1,0 +1,33 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.aps
+*.ncb
+*.opensdf
+*.sdf
+*.cache
+*.idb
+*.pdb
+*.ilk
+*.res
+*.tlog
+*.log
+*.pch
+
+# Compiled Object files
+*.obj
+
+# Executables
+*.dll
+
+# Build Directories
+/x64/
+/Debug/
+/Release/
+
+# VS Code
+.vscode/
+
+# Private docs
+docs/

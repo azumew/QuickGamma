@@ -1,0 +1,29 @@
+#include <windows.h>
+#include "resource.h"
+
+#define IDC_STATIC -1
+
+// Icon
+IDI_APP_ICON ICON "quickgamma.ico"
+
+// Define the Dialog
+1 24 "quickgamma.manifest"
+
+IDD_MAIN_DIALOG DIALOGEX 0, 0, 250, 140
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+CAPTION "QuickGamma"
+FONT 9, "Segoe UI"
+BEGIN
+    LTEXT           "Monitor:", IDC_STATIC, 10, 10, 30, 8
+    COMBOBOX        IDC_COMBO_MONITOR, 45, 8, 190, 100, CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    
+    LTEXT           "Gamma:", IDC_STATIC, 10, 30, 30, 8
+    EDITTEXT        IDC_LABEL_VALUE, 200, 28, 30, 12, ES_AUTOHSCROLL | WS_BORDER | WS_TABSTOP
+    CONTROL         "", IDC_SLIDER_GAMMA, "msctls_trackbar32", TBS_BOTH | TBS_NOTICKS | WS_TABSTOP, 10, 45, 230, 15
+    
+    PUSHBUTTON      "Default All (1.0)", IDC_BTN_DEFAULT, 10, 70, 70, 14
+    PUSHBUTTON      "Make Shortcut", IDC_BTN_SHORTCUT, 80, 70, 80, 14
+    
+    DEFPUSHBUTTON   "OK", IDOK, 130, 115, 50, 14
+    PUSHBUTTON      "Cancel", IDCANCEL, 190, 115, 50, 14
+END
