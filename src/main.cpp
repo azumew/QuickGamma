@@ -85,6 +85,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
     LocalFree(argv);
 
+    // Single Instance Check
+    HANDLE hMutex = CreateMutexW(NULL, TRUE, L"Local\\QuickGammaInstanceMutex");
+    if (GetLastError() == ERROR_ALREADY_EXISTS) {
+        // Find existing window and activate it
+        HWND hExisting = FindWindowW(L"QuickGammaHidden", NULL);
+        if (hExisting) {
+            // Send message to show dialog (WM_TRAYICON + WM_LBUTTONUP triggers ShowMainDialog)
+            PostMessageW(hExisting, WM_TRAYICON, 0, WM_LBUTTONUP);
+        }
+        return 0; // Exit this instance
+    }
+
     // GUI Mode Initialization
     InitCommonControls(); // For Slider
 
@@ -114,6 +126,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     // Create Main Dialog (Modeless)
     g_hDlg = CreateDialogW(hInstance, MAKEINTRESOURCEW(IDD_MAIN_DIALOG), NULL, DialogProc);
     
+    // Show Main Dialog on Startup
+    ShowMainDialog();
+
     // Start Message Loop
     MSG msg;
     while (GetMessage(&msg, NULL, 0, 0)) {
@@ -127,6 +142,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     
     // Reset Gamma on Exit
     g_gammaCtrl.SetAllGamma(1.0f);
+    
+    if (hMutex) {
+        ReleaseMutex(hMutex);
+        CloseHandle(hMutex);
+    }
     
     CoUninitialize();
     return (int)msg.wParam;
