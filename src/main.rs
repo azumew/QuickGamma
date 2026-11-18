@@ -55,10 +55,12 @@ fn session_id() -> Result<u32> {
     }
     Ok(id)
 }
+const MIN_GAMMA: u16 = 25;
+const MAX_GAMMA: u16 = 400;
 fn value(s: &str) -> Result<u16> {
     let x = s.trim().parse::<f64>().unwrap_or(f64::NAN);
-    if !(0.2..=4.).contains(&x) {
-        return Err(err("ガンマは 0.20 ～ 4.00 で指定してください"));
+    if !(f64::from(MIN_GAMMA) / 100.0..=f64::from(MAX_GAMMA) / 100.0).contains(&x) {
+        return Err(err("ガンマは 0.25 ～ 4.00 で指定してください"));
     }
     Ok((x * 100.).round() as u16)
 }
@@ -189,6 +191,14 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn gamma_limits() {
+        assert_eq!(value("0.25").unwrap(), MIN_GAMMA);
+        assert_eq!(value("4.00").unwrap(), MAX_GAMMA);
+        for s in ["0.20", "0.23", "0.24", "0.249", "4.01"] {
+            assert!(value(s).is_err());
+        }
+    }
     #[test]
     fn legacy_cli() {
         let a = |s: &str| s.split_whitespace().map(str::to_string).collect::<Vec<_>>();

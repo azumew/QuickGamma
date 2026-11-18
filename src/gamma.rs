@@ -204,7 +204,7 @@ fn change(dir: &Path, originals: &mut BTreeMap<String, Original>, line: &str) ->
     let (k, v) = line.split_once(' ').ok_or_else(|| err("要求が不正です"))?;
     let k: u64 = k.parse().map_err(|_| err("画面番号が不正です"))?;
     let v: u16 = v.parse().map_err(|_| err("補正値が不正です"))?;
-    if !(20..=400).contains(&v) {
+    if !(crate::MIN_GAMMA..=crate::MAX_GAMMA).contains(&v) {
         return Err(err("補正値が範囲外です"));
     }
     let d = displays()

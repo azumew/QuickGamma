@@ -85,7 +85,7 @@ impl App {
             if Some(token(d)) == old {
                 sel = i
             }
-            let label = wide(&format!("{}  ({})", i + 1, d.name));
+            let label = wide(&format!("モニター {}", i + 1));
             SendDlgItemMessageW(h, COMBO, CB_ADDSTRING, 0, label.as_ptr() as isize);
         }
         SendDlgItemMessageW(h, COMBO, CB_SETCURSEL, sel, 0);
@@ -369,7 +369,13 @@ pub fn run(args: &[String]) -> Result<()> {
         }
         let mica = 2i32;
         DwmSetWindowAttribute(h, 38, &mica as *const _ as _, 4);
-        SendDlgItemMessageW(h, SLIDER, TBM_SETRANGE, 1, (400 << 16) | 20);
+        SendDlgItemMessageW(
+            h,
+            SLIDER,
+            TBM_SETRANGE,
+            1,
+            ((MAX_GAMMA as isize) << 16) | MIN_GAMMA as isize,
+        );
         SendDlgItemMessageW(h, EDIT, EM_SETLIMITTEXT, 16, 0);
         let mut app = App {
             worker: Worker::start()?,
